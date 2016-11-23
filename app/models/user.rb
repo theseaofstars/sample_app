@@ -49,6 +49,10 @@ class User < ApplicationRecord
     reset_send_at < 2.hours.ago
   end
 
+  def feed
+    Micropost.where("user_id = ?",id)
+  end
+
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
         BCrypt::Engine.cost
