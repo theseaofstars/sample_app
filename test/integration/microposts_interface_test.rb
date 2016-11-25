@@ -13,14 +13,18 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     log_in_as(@user)
     get root_path
     assert_select 'div.pagination'
+    assert_select 'input[type=file]'
+    picture = fixture_file_upload('test/fixtures/rails.png','image/png')
     assert_difference 'Micropost.count',1 do
       post microposts_path,params:{
           micropost:{
-              content:"valid content"
+              content:"valid content",
+              picture:picture
           }
       }
     end
     assert_redirected_to root_url
+    assert assigns(:micropost).picture?
     follow_redirect!
     assert_match "valid content",response.body
 
@@ -41,4 +45,5 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     get user_path(users(:archer))
     assert_select 'a',text:'delete',count:0
   end
+
 end
